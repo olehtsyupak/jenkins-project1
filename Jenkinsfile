@@ -3,7 +3,7 @@
 pipeline {
     agent any
     tools {
-        maven 'M3'
+        maven 'maven-3.6'
     }
     stages {
         stage("build jar") {

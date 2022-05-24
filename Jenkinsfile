@@ -24,10 +24,12 @@ pipeline {
                 }
             }
         }
-        stage("build image") {
+        stage("build and push image") {
             steps {
                 script {
                     buildImage 'olehtsyupak/my-repo:jma-4.0'
+                    dockerLogin()
+                    dockerPush 'olehtsyupak/my-repo:jma-4.0'
                 }
             }
         }

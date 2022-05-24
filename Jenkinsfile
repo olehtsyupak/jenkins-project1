@@ -27,7 +27,7 @@ pipeline {
         stage("build image") {
             steps {
                 script {
-                    buildImage()
+                    buildImage 'olehtsyupak/my-repo:jma-4.0'
                 }
             }
         }

@@ -46,8 +46,24 @@ pipeline {
           }
        }
     }
-  }
+        stage('commit version update') {
+                steps {
+                    script {
+                      withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                        sh 'git config --global user.email "jenkins@email.com"'
+                        sh 'git config --global user.name "jenkins"'
+
+                        sh "git remote set-url origin https://${USER}:${PASS}@github.com/olehtsyupak/jenkins-project1.git"
+                        sh 'git add .'
+                        sh 'git commit -m "ci: version bump"'
+                        sh 'git push origin HEAD:Versioning'
+                    }
+                }
+            }
+        }
+    }
 }
+
 
 
 

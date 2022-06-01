@@ -6,7 +6,7 @@ pipeline {
         maven 'maven-3.6'
     }
     stages {
-            stage('increment version') {
+        stage('increment version') {
                 steps {
                     script {
                         echo 'incrementing app version...'
@@ -19,7 +19,7 @@ pipeline {
            }
         }
      }
-     stage('build app') {
+        stage('build app') {
                 steps {
                     script {
                         echo "building the application..."
@@ -27,7 +27,7 @@ pipeline {
               }
           }
       }
-      stage('build image') {
+        stage('build image') {
                 steps {
                     script {
                       echo "building the docker image..."
@@ -43,6 +43,12 @@ pipeline {
             steps {
                 script {
                     echo 'deploying docker image...'
-        }
+          }
+       }
     }
+  }
 }
+
+
+
+

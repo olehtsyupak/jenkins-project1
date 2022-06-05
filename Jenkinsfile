@@ -12,6 +12,9 @@ pipeline {
     tools {
         maven 'maven-3.6'
     }
+    environment {
+        IMAGE_NAME = 'olehtsyupak/my-repo:java-maven-2.0'
+    }
     stages {
             stage('increment version') {
                 steps {

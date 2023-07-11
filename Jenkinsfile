@@ -1,41 +1,49 @@
-#!/usr/bin/env groovy
-
-def gv
-
 pipeline {
-    agent any
-    tools {
-        maven 'maven-3.6'
+    agent {
+        docker {
+            image 'maven:3.9-alpine' 
+            args '-v /root/.m2:/root/.m2'
+        }
+    }
+    environment {
+        APP_PORT = '9090'
+        JOB_NAME = "${JOB_NAME}"
     }
     stages {
-        stage("init") {
+        stage('Build') {
             steps {
                 script {
-                    gv = load "script.groovy"
+                    sh 'mvn clean package'
                 }
             }
         }
-        stage("build jar") {
-            steps {
-                script {
-                    gv.buildJar()
+        stage('Integration Test') {
+            parallel {
+                stage('Running Application') {
+                    agent any
+                    options {
+                        timeout(time: 1, unit: 'MINUTES')
+                    }
+                    steps {
+                        script {
+                            try {
+                                dir('target') {
+                                    sh 'java -jar contact.war'
+                                }
+                            } catch (Exception e) {
+                                echo "Caught exception: ${e}"
+                                currentBuild.result = 'SUCCESS'
+                            }
+                        }
+                    }
                 }
-            }
-        }
-        stage("build image") {
-            steps {
-                script {
-                    gv.buildImage()
-                }
-            }
-        }
-        stage("deploy") {
-            steps {
-                script {
-                    gv.deployApp()
+                stage('Running Test') {
+                    steps {
+                        sleep time: 30, unit: 'SECONDS'
+                        sh 'mvn -Dtest=RestIT test'
+                    }
                 }
             }
         }
     }
 }
-
